@@ -1,5 +1,7 @@
 // api/chat.js
-// Vercel Serverless Function — talks to Google's Gemini API, keeps the API key server-side.
+// Vercel Serverless Function — verifies Google sign-in, then talks to Gemini API.
+
+import { OAuth2Client } from 'google-auth-library'
 
 const SYSTEM_PROMPT = `You are Ollie, a friendly, warm owl who answers questions for children roughly ages 6 to 12.
 
@@ -14,10 +16,31 @@ Rules you must always follow:
 - Never mention that you are an AI model, Gemini, or Google, or discuss technical details about yourself.`
 
 const MODEL = 'gemini-3.1-flash-lite'
+const oauthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
+
+async function verifyToken(authHeader) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null
+  const token = authHeader.slice('Bearer '.length)
+  try {
+    const ticket = await oauthClient.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    })
+    return ticket.getPayload() // contains email, name, etc. — we don't store or log this
+  } catch (err) {
+    return null
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: "Oops, Ollie can only answer questions this way!" })
+    return
+  }
+
+  const payload = await verifyToken(req.headers.authorization)
+  if (!payload) {
+    res.status(401).json({ error: "Please sign in again to keep chatting with Ollie." })
     return
   }
 
@@ -39,7 +62,6 @@ export default async function handler(req, res) {
     .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
     .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }))
 
-  // Gemini uses "user" / "model" roles, not "user" / "assistant"
   const contents = cleanMessages.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }],
@@ -57,9 +79,7 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents,
-          generationConfig: {
-            maxOutputTokens: 400,
-          },
+          generationConfig: { maxOutputTokens: 400 },
         }),
       }
     )

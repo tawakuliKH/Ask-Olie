@@ -9,13 +9,52 @@ const SUGGESTIONS = [
 ]
 
 function App() {
-  const [messages, setMessages] = useState([]) // { role: 'user' | 'assistant', content: string }
+  const [idToken, setIdToken] = useState(null)
+  const [authError, setAuthError] = useState(null)
+  const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [thinking, setThinking] = useState(false)
   const [error, setError] = useState(null)
   const scrollRef = useRef(null)
+  const signInButtonRef = useRef(null)
 
-  // Auto-scroll to newest message
+  // Set up Google Sign-In once the GIS script has loaded
+  useEffect(() => {
+    if (idToken) return // already signed in, skip
+
+    function initGoogleSignIn() {
+      if (!window.google || !signInButtonRef.current) return
+
+      window.google.accounts.id.initialize({
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+        callback: (response) => {
+          setAuthError(null)
+          setIdToken(response.credential)
+        },
+      })
+
+      window.google.accounts.id.renderButton(signInButtonRef.current, {
+        theme: 'outline',
+        size: 'large',
+        shape: 'pill',
+        text: 'signin_with',
+      })
+    }
+
+    // GIS script loads async — poll briefly until it's ready
+    if (window.google) {
+      initGoogleSignIn()
+    } else {
+      const interval = setInterval(() => {
+        if (window.google) {
+          clearInterval(interval)
+          initGoogleSignIn()
+        }
+      }, 100)
+      return () => clearInterval(interval)
+    }
+  }, [idToken])
+
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, thinking])
@@ -33,14 +72,25 @@ function App() {
     try {
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${idToken}`,
+        },
         body: JSON.stringify({ messages: newMessages }),
       })
 
       const data = await response.json()
 
+      if (response.status === 401) {
+        // Token expired or invalid — bounce back to sign-in
+        setIdToken(null)
+        setAuthError('Please sign in again to keep chatting with Ollie.')
+        setThinking(false)
+        return
+      }
+
       if (!response.ok) {
-        setError(data.error || "Ollie is having trouble right now. Try again!")
+        setError(data.error || 'Ollie is having trouble right now. Try again!')
         setThinking(false)
         return
       }
@@ -62,6 +112,26 @@ function App() {
     sendMessage(question)
   }
 
+  // --- Sign-in gate ---
+  if (!idToken) {
+    return (
+      <div className="app-shell">
+        <header className="app-header">
+          <h1>Ask Ollie 🦉</h1>
+        </header>
+        <main className="chat-card signin-card">
+          <OllieAvatar thinking={false} />
+          <p className="empty-state">A grown-up needs to sign in with Google before we start chatting!</p>
+          {authError && (
+            <div className="error-banner" role="alert">{authError}</div>
+          )}
+          <div ref={signInButtonRef} />
+        </main>
+      </div>
+    )
+  }
+
+  // --- Main chat UI ---
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -137,5 +207,7 @@ function App() {
     </div>
   )
 }
+
+console.log('CLIENT ID:', import.meta.env.VITE_GOOGLE_CLIENT_ID)
 
 export default App
