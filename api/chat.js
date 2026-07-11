@@ -13,7 +13,7 @@ Rules you must always follow:
 - You may use a light, occasional emoji, but do not overdo it.
 - Never mention that you are an AI model, Gemini, or Google, or discuss technical details about yourself.`
 
-const MODEL = 'gemini-2.5-flash-lite'
+const MODEL = 'gemini-3.1-flash-lite'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {

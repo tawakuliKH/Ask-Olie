@@ -30,14 +30,27 @@ function App() {
     setInput('')
     setThinking(true)
 
-    // --- MOCK RESPONSE (temporary, replaced with real API call in Step 8) ---
-    setTimeout(() => {
-      setMessages(prev => [
-        ...prev,
-        { role: 'assistant', content: `(mock reply) Great question about "${trimmed}"! 🦉` },
-      ])
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: newMessages }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        setError(data.error || "Ollie is having trouble right now. Try again!")
+        setThinking(false)
+        return
+      }
+
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply }])
+    } catch (err) {
+      setError("Ollie couldn't hear that. Check your connection and try again!")
+    } finally {
       setThinking(false)
-    }, 1200)
+    }
   }
 
   function handleSubmit(e) {
