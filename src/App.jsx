@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar.jsx";
 import ProfileMenu from "./ProfileMenu.jsx";
 
 const SUGGESTIONS = [
-  "چرا آسمان آبی است؟",
+  "Why is the sky blue?",
   "How do birds fly?",
   "Why do we dream?",
   "How do plants grow?",
@@ -35,6 +35,20 @@ function createEmptySession() {
     messages: [],
     updatedAt: Date.now(),
   };
+}
+
+function BackgroundDecoration() {
+  return (
+    <div className="bg-decoration" aria-hidden="true">
+      <span className="cloud cloud-1">☁️</span>
+      <span className="cloud cloud-2">☁️</span>
+      <span className="cloud cloud-3">☁️</span>
+      <span className="sparkle sparkle-1">✨</span>
+      <span className="sparkle sparkle-2">✨</span>
+      <span className="sparkle sparkle-3">✨</span>
+      <span className="butterfly">🦋</span>
+    </div>
+  );
 }
 
 function App() {
@@ -287,6 +301,7 @@ function App() {
   if (!idToken) {
     return (
       <div className="app-shell signin-shell">
+        <BackgroundDecoration />
         <header className="app-header">
           <h1>Ask Ollie 🦉</h1>
         </header>
@@ -320,6 +335,8 @@ function App() {
       />
 
       <div className="main-panel">
+        <BackgroundDecoration />
+
         <div className="topbar">
           <button
             className="sidebar-toggle-btn"

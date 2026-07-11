@@ -1,12 +1,30 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ask Ollie</title>
-    <meta name="description" content="Ask Ollie the owl your curious questions!" />
 
-    <!-- Favicon: simple placeholder for now, we'll swap in an owl icon later -->
+    <title>Ask Ollie - A Friendly Owl Chatbot for Curious Kids</title>
+    <meta name="description" content="Ask Ollie is a friendly owl chatbot that answers kids' curious questions in simple, safe, age-appropriate language. Perfect for children ages 6-12 exploring how the world works." />
+    <meta name="keywords" content="kids chatbot, children's Q&A app, educational chatbot for kids, safe AI for children, Ask Ollie, owl chatbot, kids learning app" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://ask-olie.vercel.app/" />
+
+    <!-- Open Graph (Facebook, LinkedIn, WhatsApp previews) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ask Ollie - A Friendly Owl Chatbot for Curious Kids" />
+    <meta property="og:description" content="A safe, simple chatbot that answers kids' curious questions in warm, age-appropriate language." />
+    <meta property="og:url" content="https://ask-olie.vercel.app/" />
+    <meta property="og:site_name" content="Ask Ollie" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="fa_IR" />
+
+    <!-- Twitter/X card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Ask Ollie - A Friendly Owl Chatbot for Curious Kids" />
+    <meta name="twitter:description" content="A safe, simple chatbot that answers kids' curious questions in warm, age-appropriate language." />
+
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Google Fonts: Fredoka (headings) + Nunito (body) -->
@@ -16,11 +34,34 @@
       href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- Structured data: helps Google understand what this app is -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Ask Ollie",
+      "description": "A friendly owl chatbot that answers kids' curious questions in simple, safe, age-appropriate language.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "audience": {
+        "@type": "PeopleAudience",
+        "suggestedMinAge": 6,
+        "suggestedMaxAge": 12
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>

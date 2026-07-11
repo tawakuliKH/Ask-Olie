@@ -576,3 +576,112 @@
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
 }
+
+/* --- Background decorations: drifting clouds, twinkling sparkles, a butterfly --- */
+.main-panel,
+.signin-shell {
+  position: relative;
+  overflow: hidden;
+}
+
+.bg-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.topbar,
+.main-panel .chat-card,
+.signin-shell .app-header,
+.signin-shell .chat-card {
+  position: relative;
+  z-index: 1;
+}
+
+.cloud {
+  position: absolute;
+  font-size: 2.5rem;
+  opacity: 0.7;
+  filter: blur(0.3px);
+  animation: cloud-drift linear infinite;
+}
+
+.cloud-1 {
+  top: 8%;
+  font-size: 3rem;
+  animation-duration: 38s;
+  animation-delay: -5s;
+}
+.cloud-2 {
+  top: 22%;
+  font-size: 2rem;
+  opacity: 0.5;
+  animation-duration: 28s;
+  animation-delay: -18s;
+}
+.cloud-3 {
+  top: 55%;
+  font-size: 2.3rem;
+  opacity: 0.6;
+  animation-duration: 45s;
+  animation-delay: -30s;
+}
+
+@keyframes cloud-drift {
+  from { left: -10%; }
+  to { left: 110%; }
+}
+
+.sparkle {
+  position: absolute;
+  font-size: 1.2rem;
+  animation: sparkle-twinkle ease-in-out infinite;
+}
+
+.sparkle-1 {
+  top: 15%;
+  left: 15%;
+  animation-duration: 2.4s;
+}
+.sparkle-2 {
+  top: 65%;
+  left: 85%;
+  animation-duration: 3.1s;
+  animation-delay: -1s;
+}
+.sparkle-3 {
+  top: 40%;
+  left: 8%;
+  animation-duration: 2.7s;
+  animation-delay: -0.5s;
+}
+
+@keyframes sparkle-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.butterfly {
+  position: absolute;
+  top: 35%;
+  font-size: 1.8rem;
+  animation: butterfly-flutter 22s ease-in-out infinite;
+}
+
+@keyframes butterfly-flutter {
+  0%   { left: -5%; top: 30%; transform: rotate(0deg); }
+  20%  { left: 20%; top: 15%; transform: rotate(8deg); }
+  40%  { left: 45%; top: 40%; transform: rotate(-6deg); }
+  60%  { left: 65%; top: 20%; transform: rotate(8deg); }
+  80%  { left: 85%; top: 45%; transform: rotate(-6deg); }
+  100% { left: 105%; top: 25%; transform: rotate(0deg); }
+}
+
+/* Reduced motion: freeze decorations entirely rather than just slowing them down */
+@media (prefers-reduced-motion: reduce) {
+  .cloud, .sparkle, .butterfly {
+    animation: none;
+  }
+}
