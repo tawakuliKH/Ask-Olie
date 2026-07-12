@@ -1,11 +1,11 @@
-function OllieAvatar({ thinking = false }) {
+function KaiAvatar({ thinking = false }) {
   return (
     <svg
       className={`ollie-avatar ${thinking ? 'is-thinking' : ''}`}
       viewBox="0 0 200 200"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label={thinking ? 'Ollie the owl is thinking' : 'Ollie the owl'}
+      aria-label={thinking ? 'Kai the owl is thinking' : 'Kai the owl'}
     >
       {/* Left wing */}
       <ellipse
@@ -63,4 +63,4 @@ function OllieAvatar({ thinking = false }) {
   )
 }
 
-export default OllieAvatar
+export default KaiAvatar

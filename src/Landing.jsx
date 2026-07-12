@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import OllieAvatar from "./OllieAvatar.jsx";
+import KaiAvatar from "./KaiAvatar.jsx";
 
 const CONTENT = {
   en: {
     dir: "ltr",
-    pageTitle: "Ask Ollie — A Friendly Owl Chatbot for Curious Kids",
-    title: "Ask Ollie! 🦉",
+    pageTitle: "AIKidLy — A Friendly Owl Chatbot for Curious Kids",
+    title: "AIKidLy 🦉",
     subtitle:
-      "A wise, friendly owl who loves answering your \"why\" and \"how\" questions!",
+      "Meet Kai — a wise, friendly owl who loves answering your \"why\" and \"how\" questions!",
     features: [
       { icon: "💬", title: "Simple Chat", desc: "Kids can type their question, or ask by voice." },
       { icon: "🛡️", title: "Safe for Kids", desc: "Answers are simple, friendly, and age-appropriate." },
@@ -18,16 +18,16 @@ const CONTENT = {
   },
   fa: {
     dir: "rtl",
-    pageTitle: "اسک الی — ربات گفتگوی جغد برای کودکان کنجکاو",
-    title: "اسک الی 🦉",
+    pageTitle: "ای‌آی‌کیدلی — ربات گفتگوی جغد برای کودکان کنجکاو",
+    title: "ای‌آی‌کیدلی 🦉",
     subtitle:
-      "یک جغد دوست‌داشتنی و مهربان که با شادی به سوالات «چرا» و «چگونه»ی کودکان پاسخ می‌دهد!",
+      "با کای آشنا شوید — یک جغد دوست‌داشتنی و مهربان که با شادی به سوالات «چرا» و «چگونه»ی کودکان پاسخ می‌دهد!",
     features: [
       { icon: "💬", title: "گفتگوی ساده", desc: "کودکان می‌توانند سوال خود را تایپ کنند یا با صدا بپرسند." },
       { icon: "🛡️", title: "ایمن برای کودکان", desc: "پاسخ‌ها ساده، دوستانه و متناسب با سن کودک هستند." },
       { icon: "🎤", title: "ورودی صوتی", desc: "نیازی به تایپ نیست — فقط با صدای بلند بپرسید." },
     ],
-    cta: "شروع گفتگو با الی 🦉",
+    cta: "شروع گفتگو با کای 🦉",
     ctaNote: "توصیه می‌شود در کنار کودک خود باشید، به‌خصوص بار اول.",
   },
 };
@@ -63,7 +63,7 @@ export default function Landing({ initialLang = "en", onStart }) {
       </div>
 
       <div className="landing-hero">
-        <OllieAvatar thinking={false} />
+        <KaiAvatar thinking={false} />
         <h1 className="landing-title">{t.title}</h1>
         <p className="landing-subtitle">{t.subtitle}</p>
       </div>

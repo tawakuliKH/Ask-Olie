@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import OllieAvatar from "./OllieAvatar.jsx";
+import KaiAvatar from "./KaiAvatar.jsx";
 import Sidebar from "./Sidebar.jsx";
 import ProfileMenu from "./ProfileMenu.jsx";
 
@@ -19,7 +19,7 @@ function decodeToken(token) {
 }
 
 function sessionsKey(email) {
-  return `askOllie_sessions_${email || "guest"}`;
+  return `aikidly_sessions_${email || "guest"}`;
 }
 
 function makeSessionTitle(firstUserMessage) {
@@ -76,7 +76,6 @@ function App() {
   const messages = activeSession?.messages || [];
   const isSignedIn = Boolean(idToken) || isGuest;
 
-  // --- Google Sign-In setup ---
   useEffect(() => {
     if (idToken) return;
 
@@ -113,7 +112,6 @@ function App() {
     }
   }, [idToken]);
 
-  // --- Load sessions once signed in ---
   useEffect(() => {
     if (!isSignedIn) return;
     const email = profile?.email;
@@ -135,7 +133,6 @@ function App() {
     }
   }, [isSignedIn, profile?.email]);
 
-  // --- Save sessions on every change ---
   useEffect(() => {
     if (!isSignedIn || sessions.length === 0) return;
     try {
@@ -152,7 +149,6 @@ function App() {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, thinking]);
 
-  // Auto-read Ollie's newest reply aloud, if enabled
   useEffect(() => {
     if (!autoRead || messages.length === 0) return;
     const lastIndex = messages.length - 1;
@@ -201,13 +197,13 @@ function App() {
         setIdToken(null);
         setProfile(null);
         setIsGuest(false);
-        setAuthError("Please sign in again to keep chatting with Ollie.");
+        setAuthError("Please sign in again to keep chatting with Kai.");
         setThinking(false);
         return;
       }
 
       if (!response.ok) {
-        setError(data.error || "Ollie is having trouble right now. Try again!");
+        setError(data.error || "Kai is having trouble right now. Try again!");
         setThinking(false);
         return;
       }
@@ -219,14 +215,13 @@ function App() {
       }));
     } catch (err) {
       setError(
-        "Ollie couldn't hear that. Check your connection and try again!",
+        "Kai couldn't hear that. Check your connection and try again!",
       );
     } finally {
       setThinking(false);
     }
   }
 
-  // Set up speech recognition once, if the browser supports it
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -270,7 +265,6 @@ function App() {
     }
   }
 
-  // Check speech synthesis support once
   useEffect(() => {
     if (!window.speechSynthesis) {
       setSpeechSupported(false);
@@ -280,11 +274,9 @@ function App() {
   function speakText(text, index) {
     if (!window.speechSynthesis) return;
 
-    // Stop anything currently playing first
     window.speechSynthesis.cancel();
 
     if (speakingIndex === index) {
-      // Clicking the same bubble again just stops it
       setSpeakingIndex(null);
       return;
     }
@@ -367,17 +359,16 @@ function App() {
     }
   }
 
-  // --- Sign-in gate ---
   if (!isSignedIn) {
     return (
       <div className="app-shell signin-shell">
         <BackgroundDecoration />
         <main className="signin-storybook-card">
-          <OllieAvatar thinking={false} />
-          <h1 className="signin-title">Ask Ollie!</h1>
+          <KaiAvatar thinking={false} />
+          <h1 className="signin-title">AIKidLy!</h1>
           <p className="signin-subtitle">
-            A wise, friendly owl who loves answering your "why" and "how"
-            questions! 🌟
+            Meet Kai — a wise, friendly owl who loves answering your "why"
+            and "how" questions! 🌟
           </p>
           <p className="signin-hint">
             A grown-up should be nearby before we start chatting.
@@ -389,7 +380,7 @@ function App() {
             </div>
           )}
 
-         <div className="signin-google-wrap">
+          <div className="signin-google-wrap">
             {!googleReady && (
               <div className="signin-google-skeleton" aria-hidden="true">
                 <span className="skeleton-spinner" />
@@ -418,7 +409,6 @@ function App() {
     );
   }
 
-  // --- Main app: sidebar + chat ---
   return (
     <div className="app-layout">
       <Sidebar
@@ -443,7 +433,7 @@ function App() {
           >
             ☰
           </button>
-          <span className="topbar-title">Ask Ollie 🦉</span>
+          <span className="topbar-title">AIKidLy 🦉</span>
           <div className="topbar-right">
             {speechSupported && (
               <button
@@ -454,7 +444,7 @@ function App() {
                   if (autoRead) stopSpeaking();
                   setAutoRead((a) => !a);
                 }}
-                title="Auto-read Ollie's replies aloud"
+                title="Auto-read Kai's replies aloud"
               >
                 {autoRead ? "🔊" : "🔈"}
               </button>
@@ -468,13 +458,13 @@ function App() {
 
         <main className="chat-card">
           <div className="ollie-header">
-            <OllieAvatar thinking={thinking} />
+            <KaiAvatar thinking={thinking} />
           </div>
 
           <div className="messages">
             {messages.length === 0 && (
               <p className="empty-state">
-                Hi! I'm Ollie. Ask me anything — try one below, or type your own
+                Hi! I'm Kai. Ask me anything — try one below, or type your own
                 question!
               </p>
             )}
@@ -485,7 +475,7 @@ function App() {
                 className={`bubble-row ${m.role === "user" ? "bubble-row-user" : "bubble-row-ollie"}`}
               >
                 {m.role === "assistant" && (
-                  <span className="bubble-label">Ollie</span>
+                  <span className="bubble-label">Kai</span>
                 )}
                 <div
                   className={`bubble ${m.role === "user" ? "bubble-user" : "bubble-ollie"}`}
@@ -506,7 +496,7 @@ function App() {
 
             {thinking && (
               <div className="bubble-row bubble-row-ollie">
-                <span className="bubble-label">Ollie</span>
+                <span className="bubble-label">Kai</span>
                 <div className="bubble bubble-ollie bubble-thinking">
                   <span className="dot" />
                   <span className="dot" />

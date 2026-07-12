@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ask-olie.vercel.app/sitemap.xml
+Sitemap: https://aikidly.vercel.app/sitemap.xml

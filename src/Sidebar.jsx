@@ -38,7 +38,7 @@ function Sidebar({
       {isOpen && <div className="sidebar-backdrop" onClick={onClose} />}
       <aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-header">
-          <span className="sidebar-logo">Ask Ollie 🦉</span>
+          <span className="sidebar-logo">AIKidLy 🦉</span>
         </div>
 
         <button className="new-chat-btn" onClick={onNewChat}>
