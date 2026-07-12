@@ -64,6 +64,9 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [listening, setListening] = useState(false);
   const [voiceSupported, setVoiceSupported] = useState(true);
+  const [speechSupported, setSpeechSupported] = useState(true);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
+  const [autoRead, setAutoRead] = useState(false);
   const recognitionRef = useRef(null);
   const scrollRef = useRef(null);
   const signInButtonRef = useRef(null);
@@ -146,6 +149,17 @@ function App() {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, thinking]);
+
+  // Auto-read Ollie's newest reply aloud, if enabled
+  useEffect(() => {
+    if (!autoRead || messages.length === 0) return;
+    const lastIndex = messages.length - 1;
+    const last = messages[lastIndex];
+    if (last.role === "assistant") {
+      speakText(last.content, lastIndex);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages.length, autoRead]);
 
   function updateActiveSession(updater) {
     setSessions((prev) =>
@@ -254,6 +268,40 @@ function App() {
     }
   }
 
+  // Check speech synthesis support once
+  useEffect(() => {
+    if (!window.speechSynthesis) {
+      setSpeechSupported(false);
+    }
+  }, []);
+
+  function speakText(text, index) {
+    if (!window.speechSynthesis) return;
+
+    // Stop anything currently playing first
+    window.speechSynthesis.cancel();
+
+    if (speakingIndex === index) {
+      // Clicking the same bubble again just stops it
+      setSpeakingIndex(null);
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1.1;
+    utterance.onend = () => setSpeakingIndex(null);
+    utterance.onerror = () => setSpeakingIndex(null);
+
+    setSpeakingIndex(index);
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function stopSpeaking() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    setSpeakingIndex(null);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     sendMessage(input);
@@ -264,6 +312,7 @@ function App() {
   }
 
   function handleNewChat() {
+    stopSpeaking();
     const fresh = createEmptySession();
     setSessions((prev) => [fresh, ...prev]);
     setActiveSessionId(fresh.id);
@@ -271,6 +320,7 @@ function App() {
   }
 
   function handleSelectSession(id) {
+    stopSpeaking();
     setActiveSessionId(id);
     setSidebarOpen(false);
   }
@@ -297,6 +347,7 @@ function App() {
   }
 
   function handleSignOut() {
+    stopSpeaking();
     setIdToken(null);
     setProfile(null);
     setIsGuest(false);
@@ -372,10 +423,26 @@ function App() {
             ☰
           </button>
           <span className="topbar-title">Ask Ollie 🦉</span>
-          <ProfileMenu
-            profile={isGuest ? { name: "Guest", email: "Not signed in" } : profile}
-            onSignOut={handleSignOut}
-          />
+          <div className="topbar-right">
+            {speechSupported && (
+              <button
+                className={`auto-read-toggle ${autoRead ? "auto-read-toggle-on" : ""}`}
+                aria-pressed={autoRead}
+                aria-label="Toggle auto-read replies aloud"
+                onClick={() => {
+                  if (autoRead) stopSpeaking();
+                  setAutoRead((a) => !a);
+                }}
+                title="Auto-read Ollie's replies aloud"
+              >
+                {autoRead ? "🔊" : "🔈"}
+              </button>
+            )}
+            <ProfileMenu
+              profile={isGuest ? { name: "Guest", email: "Not signed in" } : profile}
+              onSignOut={handleSignOut}
+            />
+          </div>
         </div>
 
         <main className="chat-card">
@@ -403,6 +470,15 @@ function App() {
                   className={`bubble ${m.role === "user" ? "bubble-user" : "bubble-ollie"}`}
                 >
                   {m.content}
+                  {m.role === "assistant" && speechSupported && (
+                    <button
+                      className={`speak-btn ${speakingIndex === i ? "speak-btn-active" : ""}`}
+                      aria-label={speakingIndex === i ? "Stop reading aloud" : "Read this aloud"}
+                      onClick={() => speakText(m.content, i)}
+                    >
+                      {speakingIndex === i ? "⏸️" : "🔊"}
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

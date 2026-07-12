@@ -47,3 +47,66 @@ export default async function handler(req, res) {
       return
     }
   }
+
+  const apiKey = process.env.GEMINI_API_KEY
+  if (!apiKey) {
+    console.error('Missing GEMINI_API_KEY environment variable')
+    res.status(500).json({ error: "Ollie is taking a little nap right now. Try again soon!" })
+    return
+  }
+
+  const { messages } = req.body || {}
+
+  if (!Array.isArray(messages) || messages.length === 0) {
+    res.status(400).json({ error: "Ollie didn't quite catch that. Try asking again!" })
+    return
+  }
+
+  const cleanMessages = messages
+    .filter(m => m && (m.role === 'user' || m.role === 'assistant') && typeof m.content === 'string')
+    .map(m => ({ role: m.role, content: m.content.slice(0, 1000) }))
+
+  const contents = cleanMessages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }],
+  }))
+
+  try {
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
+          contents,
+          generationConfig: { maxOutputTokens: 400 },
+        }),
+      }
+    )
+
+    if (!response.ok) {
+      const errText = await response.text()
+      console.error('Gemini API error:', response.status, errText)
+      res.status(502).json({ error: "Ollie is having trouble thinking right now. Try again in a moment!" })
+      return
+    }
+
+    const data = await response.json()
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text
+
+    if (!reply) {
+      console.error('Unexpected Gemini response shape:', JSON.stringify(data))
+      res.status(502).json({ error: "Ollie got a bit confused. Can you ask that again?" })
+      return
+    }
+
+    res.status(200).json({ reply })
+  } catch (err) {
+    console.error('Error calling Gemini:', err)
+    res.status(500).json({ error: "Something went wrong. Ollie will be back soon!" })
+  }
+}

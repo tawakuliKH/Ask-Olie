@@ -771,3 +771,192 @@
   color: #aaa;
   margin: var(--space-xs) 0 0;
 }
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.auto-read-toggle {
+  background: white;
+  border: 2px solid var(--color-accent-purple);
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.auto-read-toggle-on {
+  background: var(--color-accent-purple);
+}
+
+.bubble-ollie {
+  position: relative;
+  padding-right: 34px;
+}
+
+.speak-btn {
+  position: absolute;
+  bottom: 6px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  opacity: 0.6;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.speak-btn:hover {
+  opacity: 1;
+}
+.speak-btn-active {
+  opacity: 1;
+  animation: speak-pulse 1s ease-in-out infinite;
+}
+
+@keyframes speak-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* --- Landing page (English default, Persian via dropdown) --- */
+.landing {
+  font-family: var(--font-body);
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--color-sky-top) 0%, var(--color-sky-bottom) 100%);
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.landing-rtl {
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+.landing-lang-switch {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+}
+.landing-rtl .landing-lang-switch {
+  right: auto;
+  left: var(--space-md);
+}
+
+.landing-lang-switch select {
+  background: white;
+  border: 2px solid var(--color-accent-purple);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  font-family: inherit;
+  color: var(--color-accent-purple-dark);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.landing-hero {
+  text-align: center;
+  max-width: 480px;
+  margin: var(--space-lg) 0;
+}
+
+.landing-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  color: var(--color-accent-purple-dark);
+  margin: var(--space-sm) 0;
+}
+.landing-rtl .landing-title {
+  font-family: 'Vazirmatn', sans-serif;
+  font-weight: 700;
+}
+
+.landing-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--color-text);
+}
+
+.landing-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+  max-width: 800px;
+  width: 100%;
+  margin-bottom: var(--space-lg);
+}
+
+.landing-feature-card {
+  background: white;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-md);
+  text-align: center;
+}
+
+.landing-feature-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.landing-feature-card h3 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin: var(--space-xs) 0;
+  color: var(--color-accent-purple-dark);
+}
+.landing-rtl .landing-feature-card h3 {
+  font-family: 'Vazirmatn', sans-serif;
+}
+
+.landing-feature-card p {
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.landing-cta {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.landing-cta-btn {
+  display: inline-block;
+  background: var(--color-accent-purple);
+  color: white;
+  border: none;
+  font-weight: 700;
+  font-size: 1.1rem;
+  font-family: inherit;
+  padding: 14px 36px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.15s ease;
+}
+.landing-cta-btn:hover {
+  transform: scale(1.03);
+}
+
+.landing-cta-note {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: var(--space-sm);
+}
+
+@media (max-width: 640px) {
+  .landing-features {
+    grid-template-columns: 1fr;
+  }
+}
