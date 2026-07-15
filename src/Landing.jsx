@@ -84,6 +84,12 @@ export default function Landing({ initialLang = "en", onStart }) {
         </button>
         <p className="landing-cta-note">{t.ctaNote}</p>
       </div>
+
+      <footer className="landing-footer">
+        <div className="landing-footer-badge">
+          Developed by Shayan Ali Mughol · Made with 🦉 for curious kids
+        </div>
+      </footer>
     </div>
   );
 }

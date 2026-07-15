@@ -1,7 +1,5 @@
 {
   "installCommand": "npm install",
   "buildCommand": "npm run build",
-  "rewrites": [
-    { "source": "/fa", "destination": "/index.html" }
-  ]
+  "regions": ["iad1"]
 }

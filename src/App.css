@@ -1010,3 +1010,21 @@
     animation: none;
   }
 }
+
+.landing-footer {
+  text-align: center;
+  padding: var(--space-md) 0;
+  margin-top: auto;
+}
+
+.landing-footer-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-accent-purple-dark);
+  background: white;
+  border: 2px solid var(--color-accent-purple);
+  border-radius: 999px;
+  padding: 8px 20px;
+  box-shadow: var(--shadow-card);
+}
